@@ -679,4 +679,122 @@ import requests
 
 
 
+```
+from flask import Flask, render_template
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
+
+Flask App
+app = Flask(__name__)
+
+Dash App
+dashboard = dash.Dash(__name__, server=app, routes_pathname_prefix='/dashboard/')
+
+Dashboard Layout
+dashboard.layout = html.Div([
+    html.H1("Malware Detection & Removal Admin Panel"),
+    dcc.Tabs(id='tabs', value='tab-1', children=[
+        dcc.Tab(label='Dashboard', value='tab-1'),
+        dcc.Tab(label='Scanning & Removal', value='tab-2'),
+        dcc.Tab(label='Threat Reports', value='tab-3'),
+        dcc.Tab(label='User Management', value='tab-4'),
+        dcc.Tab(label='Notifications & Alerts', value='tab-5'),
+        dcc.Tab(label='Settings', value='tab-6')
+    ]),
+    html.Div(id='tabs-content'),
+    html.Div([
+        html.H3("UI Themes"),
+        dcc.Dropdown(
+            id='ui-theme',
+            options=[
+                {'label': 'Dark Theme', 'value': 'dark'},
+                {'label': 'Light Theme', 'value': 'light'},
+                {'label': 'Red Theme', 'value': 'red'},
+                {'label': 'Green Theme', 'value': 'green'},
+                {'label': 'Blue Theme', 'value': 'blue'},
+                {'label': 'Yellow Theme', 'value': 'yellow'}
+            ],
+            value='dark'
+        )
+    ])
+])
+
+Callback Function
+@dashboard.callback(
+    Output('tabs-content', 'children'),
+    Input('tabs', 'value')
+)
+def update_tab(selected_tab):
+    if selected_tab == 'tab-1':
+        return html.Div([
+            html.H3("Live Threat Overview"),
+            dcc.Graph(figure={}),
+            html.H3("System Health Status"),
+            dcc.Graph(figure={})
+        ])
+    elif selected_tab == 'tab-2':
+        return html.Div([
+            html.H3("Start a Scan"),
+            html.Button("Quick Scan", id='quick-scan-btn'),
+            html.Button("Full Scan", id='full-scan-btn'),
+            html.Div(id='scan-results')
+        ])
+    elif selected_tab == 'tab-3':
+        return html.Div([
+            html.H3("Threat Reports"),
+            dcc.Textarea(placeholder='Report details...')
+        ])
+    elif selected_tab == 'tab-4':
+        return html.Div([
+            html.H3("User Management"),
+            dcc.Input(placeholder='Enter username', type='text'),
+            html.Button("Add User", id='add-user-btn')
+        ])
+    elif selected_tab == 'tab-5':
+        return html.Div([
+            html.H3("Notifications & Alerts"),
+            dcc.Checklist(options=[
+                {'label': 'Email Alerts', 'value': 'email'},
+                {'label': 'SMS Alerts', 'value': 'sms'}
+            ])
+        ])
+    elif selected_tab == 'tab-6':
+        return html.Div([
+            html.H3("Settings"),
+            dcc.Input(placeholder='Enter API key', type='text'),
+            html.Button("Save Settings", id='save-settings-btn')
+        ])
+    return html.Div()
+
+Callback Function for UI Theme
+@dashboard.callback(
+    Output('tabs-content', 'style'),
+    Input('ui-theme', 'value')
+)
+def update_ui_theme(selected_theme):
+    if selected_theme == 'dark':
+        return {'background-color': '#333', 'color': '#fff'}
+    elif selected_theme == 'light':
+        return {'background-color': '#fff', 'color': '#333'}
+    elif selected_theme == 'red':
+        return {'background-color': '#f00', 'color': '#fff'}
+    elif selected_theme == 'green':
+        return {'background-color': '#0f0', 'color': '#fff'}
+    elif selected_theme == 'blue':
+        return {'background-color': '#00f', 'color': '#fff'}
+    elif selected_theme == 'yellow':
+        return {'background-color': '#ff0', 'color': '#333'}
+    return {}
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+
+
+
+
+
 
